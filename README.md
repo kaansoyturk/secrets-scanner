@@ -1,65 +1,57 @@
-# 🔑 Secrets Scanner
+# Secrets Scanner
 
-Kod dosyalarını ve repolarını tarayarak yanlışlıkla commit edilmiş API anahtarları, şifreler ve token'ları tespit eden güvenlik aracı.
+Kod dosyalarini ve GitHub repolarini tarayarak yanlislikla commit edilmis
+API anahtarlari, sifreler ve tokenlari tespit eden guvenlik araci.
 
-## 🔍 Ne Tespit Ediyor?
+## Ne Tespit Ediyor?
 
-- AWS Access Key & Secret Key
-- GitHub Token
-- Google API Key
-- Stripe Secret Key
-- Private Key (RSA, EC)
-- Generic Password & API Key
-- Generic Secret & Token
+- AWS Access Key ve Secret Key
+- GitHub, Google, Stripe, Slack, Discord token
+- Twitter, Azure, Ethereum anahtarlari
+- Private Key (RSA, EC, OpenSSH, PGP)
 - Database URL (MongoDB, MySQL, PostgreSQL, Redis)
+- Mailgun, Twilio, SendGrid, NPM, PyPI token
+- Generic Password, API Key, Secret, Auth Token
 
-## 🛠️ Teknolojiler
+## Teknolojiler
 
-- **Python 3** — Ana dil
-- **GitPython** — Git repo desteği
-- **Colorama** — Renkli terminal çıktısı
-- **Regex** — Kalıp eşleştirme
+- Python 3
+- Requests - GitHub API erisimi
+- ReportLab - PDF rapor
+- Colorama - Renkli terminal ciktisi
+- Regex - Kalip eslestirme
 
-## 🚀 Kurulum
-
-Repoyu klonla ve bağımlılıkları yükle:
+## Kurulum
 
     git clone https://github.com/kaansoyturk/secrets-scanner.git
     cd secrets-scanner
     python3 -m venv venv
     source venv/bin/activate
-    pip install gitpython colorama
+    pip install requests reportlab colorama
 
-## ▶️ Kullanım
+## Kullanim
 
-Bir klasörü taramak için:
+Klasor tarama:
 
     python3 scanner.py /taranacak/klasor
 
-Örnek:
+GitHub repo tarama:
 
-    python3 scanner.py ~/projelerim
+    python3 scanner.py --github https://github.com/kullanici/repo
 
-## 📸 Örnek Çıktı
+GitHub repo (token ile, private repolar icin):
 
-    🔍 Taranıyor: /Users/kaansoyturk/projelerim
+    python3 scanner.py --github https://github.com/kullanici/repo --token GITHUB_TOKEN
 
-    [!] Generic Password
-        📄 Dosya : emailer.py
-        📍 Satır : 6
-        🔎 İçerik: GMAIL_APP_PASSWORD = "bjaoaugmzbyfrilv"
+## Ozellikler
 
-    ==================================================
-    📊 Taranan dosya : 10
-    🚨 Bulunan secret: 1
+- 30+ secret kalıbı tespiti
+- Klasor bazli tarama
+- GitHub repo tarama (public ve private)
+- PDF rapor olusturma
+- Renkli terminal ciktisi
+- Gereksiz dosyalari otomatik atlar
 
-## ✅ Özellikler
+## Gelistirici
 
-- 9 farklı secret kalıbı tespiti
-- Renkli terminal çıktısı
-- Klasör bazlı tarama
-- Gereksiz dosyaları otomatik atlar
-
-## 👨‍💻 Geliştirici
-
-Kaan Soytürk — [github.com/kaansoyturk](https://github.com/kaansoyturk)
+Kaan Soyturk - github.com/kaansoyturk
