@@ -2,6 +2,7 @@ import os
 import sys
 from colorama import init, Fore, Style
 from patterns import scan_content
+from reporter import generate_report
 
 init(autoreset=True)
 
@@ -23,7 +24,6 @@ def scan_directory(path):
     print(f"\n{Fore.CYAN}🔍 Taranıyor: {path}{Style.RESET_ALL}\n")
 
     for root, dirs, files in os.walk(path):
-        # Görmezden gelinecek klasörler
         dirs[:] = [d for d in dirs if d not in IGNORED_DIRS]
 
         for file in files:
@@ -52,6 +52,10 @@ def scan_directory(path):
     else:
         print(f"{Fore.GREEN}✅ Hiçbir secret bulunamadı!{Style.RESET_ALL}")
 
+    # PDF rapor oluştur
+    report_path = "scan_report.pdf"
+    generate_report(all_findings, scanned_files, report_path)
+
     return all_findings
 
 if __name__ == "__main__":
@@ -67,3 +71,4 @@ if __name__ == "__main__":
         sys.exit(1)
 
     scan_directory(path)
+ 
