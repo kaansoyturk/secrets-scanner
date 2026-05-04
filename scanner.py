@@ -3,6 +3,7 @@ import sys
 from colorama import init, Fore, Style
 from patterns import scan_content
 from reporter import generate_report
+from github_scanner import scan_github_repo
 
 init(autoreset=True)
 
@@ -52,23 +53,53 @@ def scan_directory(path):
     else:
         print(f"{Fore.GREEN}✅ Hiçbir secret bulunamadı!{Style.RESET_ALL}")
 
-    # PDF rapor oluştur
     report_path = "scan_report.pdf"
     generate_report(all_findings, scanned_files, report_path)
 
     return all_findings
 
+def print_help():
+    print(f"""
+{Fore.CYAN}🔑 Secrets Scanner{Style.RESET_ALL}
+
+Kullanim:
+  {Fore.GREEN}Klasor tarama:{Style.RESET_ALL}
+    python3 scanner.py /taranacak/klasor
+
+  {Fore.GREEN}GitHub repo tarama:{Style.RESET_ALL}
+    python3 scanner.py --github https://github.com/kullanici/repo
+
+  {Fore.GREEN}GitHub repo (token ile):{Style.RESET_ALL}
+    python3 scanner.py --github https://github.com/kullanici/repo --token TOKEN
+    """)
+
 if __name__ == "__main__":
     if len(sys.argv) < 2:
-        print(f"{Fore.YELLOW}Kullanım: python3 scanner.py <klasör_yolu>{Style.RESET_ALL}")
-        print(f"Örnek   : python3 scanner.py /Users/kaansoyturk/projelerim")
+        print_help()
         sys.exit(1)
 
-    path = sys.argv[1]
+    # GitHub tarama
+    if "--github" in sys.argv:
+        idx = sys.argv.index("--github")
+        if idx + 1 >= len(sys.argv):
+            print(f"{Fore.RED}❌ GitHub URL eksik!{Style.RESET_ALL}")
+            sys.exit(1)
 
-    if not os.path.exists(path):
-        print(f"{Fore.RED}❌ Hata: '{path}' bulunamadı!{Style.RESET_ALL}")
-        sys.exit(1)
+        github_url = sys.argv[idx + 1]
+        token = None
 
-    scan_directory(path)
- 
+        if "--token" in sys.argv:
+            token_idx = sys.argv.index("--token")
+            if token_idx + 1 < len(sys.argv):
+                token = sys.argv[token_idx + 1]
+
+        findings, scanned = scan_github_repo(github_url, token)
+        generate_report(findings, scanned, "scan_report.pdf")
+
+    # Klasör tarama
+    else:
+        path = sys.argv[1]
+        if not os.path.exists(path):
+            print(f"{Fore.RED}❌ Hata: '{path}' bulunamadı!{Style.RESET_ALL}")
+            sys.exit(1)
+        scan_directory(path)
